@@ -274,8 +274,22 @@ if 'data_loaded' in st.session_state and st.session_state.data_loaded:
         st.metric("Latest Close", f"${latest_close:.2f}")
 
     with col4:
-        change = ((df['Close'].iloc[-1] - df['Close'].iloc[0]) / df['Close'].iloc[0]) * 100
-        st.metric('Total Return', f"{change:.2f}%", delta=f"{change:.2f}%")
+    # Safely calculate total return
+    try:
+        if df.empty or df['Close'].isna().all():
+            change = 0.0
+        else:
+            first_close = df['Close'].iloc[0] if not pd.isna(df['Close'].iloc[0]) else 0
+            last_close = df['Close'].iloc[-1] if not pd.isna(df['Close'].iloc[-1]) else 0
+            if first_close == 0:
+                change = 0.0
+            else:
+                change = ((last_close - first_close) / first_close) * 100
+    except Exception:
+        change = 0.0
+
+    st.metric('Total Return', f"{change:.2f}%", delta=f"{change:.2f}%")
+
     
     with st.expander('📋 View Raw Data (Last 10 Rows)', expanded=False):
         st.dataframe(df.tail(10), use_container_width=True)
@@ -434,4 +448,5 @@ else:
 st.divider()
 st.caption('⚠️ **Disclaimer**: This tool is for educational purposes only. Not financial advice. Past performance does not guarantee future results.')
 st.caption('📊 Data source: Yahoo Finance | Model: Scikit-learn Linear Regression')
+
 
