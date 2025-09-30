@@ -275,20 +275,20 @@ if 'data_loaded' in st.session_state and st.session_state.data_loaded:
 
     with col4:
     # Safely calculate total return
-    try:
-        if df.empty or df['Close'].isna().all():
-            change = 0.0
-        else:
-            first_close = df['Close'].iloc[0] if not pd.isna(df['Close'].iloc[0]) else 0
-            last_close = df['Close'].iloc[-1] if not pd.isna(df['Close'].iloc[-1]) else 0
-            if first_close == 0:
+        try:
+            if df.empty or df['Close'].isna().all():
                 change = 0.0
             else:
-                change = ((last_close - first_close) / first_close) * 100
-    except Exception:
-        change = 0.0
+                first_close = df['Close'].iloc[0] if not pd.isna(df['Close'].iloc[0]) else 0
+                last_close = df['Close'].iloc[-1] if not pd.isna(df['Close'].iloc[-1]) else 0
+                if first_close == 0:
+                    change = 0.0
+                else:
+                    change = ((last_close - first_close) / first_close) * 100
+        except Exception:
+            change = 0.0
 
-    st.metric('Total Return', f"{change:.2f}%", delta=f"{change:.2f}%")
+        st.metric('Total Return', f"{change:.2f}%", delta=f"{change:.2f}%")
 
     
     with st.expander('📋 View Raw Data (Last 10 Rows)', expanded=False):
