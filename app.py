@@ -270,7 +270,9 @@ if 'data_loaded' in st.session_state and st.session_state.data_loaded:
     with col2:
         st.metric('Date Range', f"{len(df)} days")
     with col3:
-        st.metric('Latest Close', f"${df['Close'].iloc[-1]:.2f}")
+        latest_close = float(df['Close'].iloc[-1])
+        st.metric("Latest Close", f"${latest_close:.2f}")
+
     with col4:
         change = ((df['Close'].iloc[-1] - df['Close'].iloc[0]) / df['Close'].iloc[0]) * 100
         st.metric('Total Return', f"{change:.2f}%", delta=f"{change:.2f}%")
@@ -432,3 +434,4 @@ else:
 st.divider()
 st.caption('⚠️ **Disclaimer**: This tool is for educational purposes only. Not financial advice. Past performance does not guarantee future results.')
 st.caption('📊 Data source: Yahoo Finance | Model: Scikit-learn Linear Regression')
+
